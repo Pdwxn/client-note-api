@@ -6,8 +6,8 @@ from clients.views import ClientViewSet
 from notes.views import NoteViewSet
 
 router = DefaultRouter()
-router.register(r'clients', ClientViewSet)
-router.register(r'notes', NoteViewSet)
+router.register(r'clients', ClientViewSet, basename='client')
+router.register(r'notes', NoteViewSet, basename='note')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
