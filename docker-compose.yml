@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: client_notes
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    container_name: django_app
+    command: >
+      sh -c "python wait_for_db.py &&
+            python manage.py migrate &&
+            python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app:Z
+    working_dir: /app/config
+    environment:
+      - DB_HOST=db
+      - POSTGRES_DB=client_notes
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
