@@ -14,7 +14,7 @@ class Note(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='notes')
 
     title = models.CharField(max_length=255)
-    content = models.TextField()
+    content = models.TextField(blank=True)
     type = models.CharField(max_length=20, choices=NOTE_TYPES)
 
     created_at = models.DateTimeField(auto_now_add=True)
