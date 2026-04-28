@@ -1,21 +1,51 @@
 # Client Notes API
 
-Client Notes API es el backend que alimenta la aplicación Client Notes. Se encarga de guardar, procesar y proteger todos los datos de clientes y notas de los usuarios.
+Backend de la aplicación Client Notes, una app tipo Notion enfocada en freelancers para gestionar clientes, proyectos y notas.
 
-## Qué hace la API
+La API se encarga de la autenticación de usuarios, persistencia de datos y control de acceso a los recursos.
 
-### Autenticación de usuarios
-La API gestiona el registro de nuevos usuarios y su inicio de sesión. Cada usuario tiene su propia cuenta protegida con contraseña. Cuando inicias sesión, la API genera tokens de acceso que la app usa para identificarte en cada solicitud, sin necesidad de volver a escribir tu contraseña.
+---
 
-### Gestión de clientes
-Cuando creas, editas o eliminas un cliente desde la app, la API procesa esa solicitud y guarda los cambios en la base de datos. Cada cliente está vinculado al usuario que lo creó, así que solo tú puedes ver y modificar tus clientes.
+## 🧩 Features
 
-### Gestión de notas
-Igual que con los clientes, la API guarda todas las notas que creas para cada cliente. Cada nota tiene un tipo (idea, reunión, llamada o contrato) y guarda el título y contenido que escribes. Solo tú puedes ver las notas de tus clientes.
+- Autenticación de usuarios (JWT)
+- CRUD completo de clientes
+- CRUD completo de notas
+- Relación entre entidades: `User → Client → Note`
+- Filtrado y ordenamiento de resultados
+- Aislamiento de datos por usuario
 
-### Seguridad
-La API verifica en cada solicitud que estés autenticado y que tengas permiso para acceder a esos datos. Si no tienes sesión activa, rechaza la solicitud. Los datos de cada usuario están completamente aislados de los demás.
+---
 
-## Cómo funciona
+## 🏗️ Stack
 
-La API está construida con Django REST Framework y usa una base de datos PostgreSQL o SQLite para guardar toda la información. Corre en un servidor y responde a las peticiones del frontend en formato JSON.
+- Python
+- Django
+- Django REST Framework
+- PostgreSQL
+- SimpleJWT
+
+---
+
+## 🧠 Modelo de datos
+
+- **User**
+- **Client**
+  - name, email, phone, company, tags
+- **Note**
+  - title, content, type (`idea`, `meeting`, `call`, `contract`)
+  - relación con Client
+
+---
+
+## 🔐 Seguridad
+
+- Autenticación basada en JWT
+- Cada endpoint filtra por `request.user`
+- Los usuarios solo pueden acceder a sus propios datos
+
+Demo: https://client-notes-pink.vercel.app/
+
+```python
+def get_queryset(self):
+    return Client.objects.filter(user=self.request.user)
