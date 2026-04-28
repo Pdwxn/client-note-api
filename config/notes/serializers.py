@@ -7,6 +7,11 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Note
         fields = '__all__'
         read_only_fields = ['user', 'created_at']
+    
+    def validate_title(self, value):
+        if not value or value.strip() == '':
+            return 'Untitled'
+        return value
 
     def validate_client(self, value):
         user = self.context['request'].user
